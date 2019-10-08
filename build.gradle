@@ -1,0 +1,77 @@
+buildscript {
+    ext {
+        springBootVersion = '2.1.2.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+//apply plugin: 'eclipse'
+//apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'war'
+//apply plugin: 'io.franzbecker.gradle-lombok'
+
+//apply plugin: 'application'
+
+//mainClassName="com.hico.core.Application"
+
+repositories {
+    mavenCentral()
+}
+
+group = 'com.hico'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.8'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
+    compile 'org.projectlombok:lombok:1.18.8'
+    //compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    compile 'org.springframework.boot:spring-boot-starter-security'
+    compile 'me.alidg:errors-spring-boot-starter:1.4.0'
+    compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-tomcat'
+    compile 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+    compile 'io.jsonwebtoken:jjwt:0.9.1'
+    compile 'org.json:json:20171018'
+    testCompile 'io.rest-assured:rest-assured:4.0.0'
+    compile 'io.rest-assured:json-path:4.0.0'
+    compile 'io.rest-assured:xml-path:4.0.0'
+    testCompile 'io.rest-assured:spring-web-test-client:4.0.0'
+    compile group: 'org.testng', name: 'testng', version: '6.9.10'
+    //testCompile 'junit:junit:4.12'
+    //compile 'junit:junit:4.12'
+    compile "org.springframework.boot:spring-boot-starter"
+
+}
+
+test {
+
+    useTestNG() {
+        suites './hs-app.xml'
+    }
+
+
+    beforeTest { descriptor ->
+         logger.lifecycle("Running test: " + descriptor)
+    }
+
+    testLogging {
+        showStandardStreams = true
+    }
+
+//    onOutput { descriptor, event ->
+//         logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
+//    }
+}
+

@@ -1,0 +1,46 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name = "Admin">
+<!--
+   <test name = "AdminTest">
+      <classes>
+         <class name = "com.hico.AdminTest"/>
+      </classes>
+  </test>
+   <test name = "SchoolAdminTest">
+        <classes>
+           <class name = "com.hico.SchoolAdminTest"/>
+        </classes>
+    </test>
+    -->
+  <test name = "SchoolCreateTest" preserve-order="true">
+    <classes>
+      <class name = "com.hico.SchoolCreateTest">
+           <methods>
+             <include name="schoolCreateTest"/>
+             <include name="schoolAdminRegisterTest"/>
+          </methods>
+      </class>
+      <class name = "com.hico.TeacherTest">
+        <methods>
+           <include name="createTeacherTest"/>
+           <include name="teacherLoginRegisterTest"/>
+           <include name="listTeachersTest"/>
+        </methods>
+     </class>
+     <class name = "com.hico.StudentTest">
+       <methods>
+        <include name="createStudentTest"/>
+       </methods>
+      </class>
+      <class name = "com.hico.ClubTest">
+       <methods>
+        <include name="createClubTest"/>
+        <include name="studentClubRegisterTest"/>
+        <include name="listClubMembersTest"/>
+       </methods>
+     </class>
+   </classes>
+  </test>
+</suite>	
