@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 @RestController
@@ -37,10 +38,31 @@ public class StudentController {
     @Autowired
     private CustomUserDetailsService userService;
 
+    // get all students 
+    // admin can see all students
+    // school admin / teacher can see all students in the school
+    // 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public List getAllStudents() {
-        return students.findAll();
+    public List<StudentInfo> getAllStudents() {
+
+        User sessionUser = userService.getLoggedInUser();
+
+        List<Student> studentList = null;
+        if (sessionUser.getRoles().contains(new Role(Role.ADMIN))) {
+            studentList = students.findAll();
+        } else if ((sessionUser.getRoles().contains(new Role(Role.SCHOOL_ADMIN))) ||
+            (sessionUser.getRoles().contains(new Role(Role.TEACHER)))) {
+            studentList =  students.findAllBySchoolId(sessionUser.getSchoolId());
+        }
+
+        if (studentList != null) {
+            List<StudentInfo> infoList = getStudentInfoListFromStudentList(studentList);
+            return infoList;
+        }
+        throw new InsufficentAccessException(
+                "Insufficent access -  cannot access student info");
     }
+
 
     // get user details
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -61,14 +83,22 @@ public class StudentController {
         if (student == null) {
             throw new RecordNotFoundException("No such student with id " + id);
         }
+        StudentInfo info = getStudentInfoForStudent(student);
+        return info;
+
+    }
+
+    private StudentInfo getStudentInfoForStudent(Student student) {
         User user = users.findById(student.getUserId()).get();
         if (user == null) {
-            throw new SentinelServerInternalError("user info missing for student " + id);
+            throw new SentinelServerInternalError(
+                    "user info missing for student " + student.getId());
         }
         System.out.println(user);
         School school = schools.findById(student.getSchoolId()).get();
         if (school == null) {
-            throw new SentinelServerInternalError("school info missing for student " + id);
+            throw new SentinelServerInternalError(
+                    "school info missing for student " + student.getId());
         }
 
         HashSet<ClubAssociation> assocList = clubAssociations.findAllByUserId(user.getId());
@@ -78,6 +108,17 @@ public class StudentController {
         info.setClubAssociations(assocList);
         return info;
     }
+
+    private List<StudentInfo> getStudentInfoListFromStudentList(List<Student> studentList) {
+
+        ArrayList<StudentInfo> infoList = new ArrayList<StudentInfo>();
+        for (Student student : studentList) {
+            StudentInfo info = getStudentInfoForStudent(student);
+            infoList.add(info);
+        }
+        return infoList;
+    }
+
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public void modifyStudentById(@PathVariable("id") String id, @Valid @RequestBody Student student) {

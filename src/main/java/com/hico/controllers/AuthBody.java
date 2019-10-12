@@ -17,6 +17,4 @@ public class AuthBody {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-    
-    
 }

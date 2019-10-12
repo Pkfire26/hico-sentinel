@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.hico.models.User;
@@ -26,11 +27,22 @@ public class SentinelExceptionHandler extends ResponseEntityExceptionHandler
             WebRequest request) {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
-        ErrorResponse error = new ErrorResponse("Server Error", details);
+        ErrorResponse error = new ErrorResponse("Error", details);
         ex.printStackTrace();
         return new ResponseEntity(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
- 
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public final ResponseEntity<Object> handleAllExceptions(
+            BadCredentialsException ex, WebRequest request) {
+        List<String> details = new ArrayList<>();
+        details.add(ex.getLocalizedMessage());
+        ErrorResponse error = new ErrorResponse("Error", details);
+        ex.printStackTrace();
+        return new ResponseEntity(error, HttpStatus.UNAUTHORIZED);
+    }
+
+
     @ExceptionHandler(RecordNotFoundException.class)
     public final ResponseEntity<Object> handleRecordNotFoundException(
             RecordNotFoundException ex, WebRequest request) {
