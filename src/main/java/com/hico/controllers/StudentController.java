@@ -79,7 +79,7 @@ public class StudentController {
 
         }
 
-        Student student = students.findById(id).get();
+        Student student = students.findByUserId(id);
         if (student == null) {
             throw new RecordNotFoundException("No such student with id " + id);
         }

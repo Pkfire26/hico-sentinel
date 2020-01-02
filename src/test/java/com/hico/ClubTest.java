@@ -29,33 +29,33 @@ public class ClubTest {
     public Object[][] clubCreateInfo() {
 
         return new Object[][] {
-         {
-             TestData.teacher_login_chs_1,
+         { TestData.school_1_admin_login_1,
              TestData.club_name_1, new String[]{},
              new String[] { "deepak.tijori@chs.fuhsd.org", "sam.houston@chs.fuhsd.org" }},
-         {TestData.teacher_login_lhs_1,TestData.club_name_1, new String[]{},
+
+         {TestData.school_2_admin_login_1, TestData.club_name_1, new String[]{},
              new String[]{ "ana.shiong@lhs.fuhsd.org", "xing.chi@lhs.fuhsd.org"}},
-         {TestData.teacher_login_chs_2,TestData.club_name_2, new String[]{},
+         {TestData.school_1_admin_login_2,TestData.club_name_2, new String[]{},
              new String[]  { "kui.zhang@chs.fuhsd.org", "deeoak.tijori@chs.fuhsd.org" }},
-         {TestData.teacher_login_lhs_2,TestData.club_name_2, new String[]{},
+         {TestData.school_2_admin_login_2,TestData.club_name_2, new String[]{},
              new String[] { "xing.chi@lhs.fuhsd.org" }},
 
-         {TestData.teacher_login_chs_3,TestData.club_name_3, new String[]{},
+         {TestData.school_1_admin_login_1,TestData.club_name_3, new String[]{},
              new String[] { "mike.tang@chs.fuhsd.org", "sam.houston@chs.fuhsd.org" }},
-         {TestData.teacher_login_lhs_3,TestData.club_name_3, new String[]{},
+         {TestData.school_2_admin_login_2,TestData.club_name_3, new String[]{},
              new String[] { "sampat.dhawan@lhs.fuhsd.org" }},
-         {TestData.teacher_login_chs_2,TestData.club_name_4, new String[]{},
+         {TestData.school_1_admin_login_2,TestData.club_name_4, new String[]{},
              new String []{ "venkat.ramana@chs.fuhsd.org" }},
-         {TestData.teacher_login_lhs_2,TestData.club_name_4, new String[]{}, 
+         {TestData.school_2_admin_login_2,TestData.club_name_4, new String[]{}, 
              new String[]{ "miguel.jose@lhs.fuhsd.org" }},
-         {TestData.teacher_login_chs_4,TestData.club_name_5, new String[]{},
+         {TestData.school_1_admin_login_2,TestData.club_name_5, new String[]{},
              new String[] {"kui.zhang@chs.fuhsd.org" }},
-         {TestData.teacher_login_lhs_4,TestData.club_name_5, new String[]{},
+         {TestData.school_2_admin_login_1,TestData.club_name_5, new String[]{},
              new String[] {"ana.shiong@lhs.fuhsd.org" }},
 
-         {TestData.teacher_login_chs_1,TestData.club_name_6, new String[]{},
+         {TestData.school_1_admin_login_1,TestData.club_name_6, new String[]{},
              new String[]{ "mike.tang@chs.fuhsd.org" }},
-         {TestData.teacher_login_lhs_1,TestData.club_name_6, new String[]{},
+         {TestData.school_2_admin_login_1,TestData.club_name_6, new String[]{},
             new String[]{ "jospeh.manuel@lhs.fuhsd.org" }}
          };
     }
@@ -74,13 +74,13 @@ public class ClubTest {
                 {TestData.register_student_chs_3, "Math" },
                 {TestData.register_student_chs_6, "Math" },
                 {TestData.register_student_chs_5, "Math" },
-                {TestData.register_student_chs_3, "Math" },
+                {TestData.register_student_chs_4, "Math" },
                 {TestData.register_student_chs_2, "Math" },
 
                 {TestData.register_student_lhs_3, "Math" },
                 {TestData.register_student_lhs_6, "Math" },
                 {TestData.register_student_lhs_5, "Math" },
-                {TestData.register_student_lhs_3, "Math" },
+                {TestData.register_student_lhs_4, "Math" },
                 {TestData.register_student_lhs_2, "Math" },
 
                 {TestData.register_student_chs_3, "Robotics" },
@@ -98,7 +98,7 @@ public class ClubTest {
                 {TestData.register_student_chs_3, "FBLA" },
                 {TestData.register_student_chs_6, "FBLA" },
                 {TestData.register_student_chs_4, "FBLA" },
-                {TestData.register_student_chs_3, "FBLA" },
+                {TestData.register_student_chs_5, "FBLA" },
                 {TestData.register_student_chs_2, "FBLA" },
 
                 {TestData.register_student_lhs_1, "FBLA" },
@@ -110,7 +110,7 @@ public class ClubTest {
                 {TestData.register_student_chs_3, "Speech And Debate" },
                 {TestData.register_student_chs_6, "Speech And Debate" },
                 {TestData.register_student_chs_4, "Speech And Debate" },
-                {TestData.register_student_chs_3, "Speech And Debate" },
+                {TestData.register_student_chs_5, "Speech And Debate" },
                 {TestData.register_student_chs_2, "Speech And Debate" },
 
                 {TestData.register_student_lhs_1, "Speech And Debate" },
@@ -144,8 +144,9 @@ public class ClubTest {
     }
 
     @Test(dataProvider="clubCreateInfo", alwaysRun=true)
-    public void createClubTest(String teacher, String clubName, String[] supervisors,
+    public void createClubTest(String admin, String clubName, String[] supervisors,
             String[] admins) {
+
 
         JSONObject obj = new JSONObject();
         obj.put("name", clubName);
@@ -156,7 +157,7 @@ public class ClubTest {
         String token =
             given().
             contentType("application/json").
-            body(teacher).
+            body(admin).
             when().
             post("http://localhost:8080/api/auth/login").
             then().
@@ -165,7 +166,7 @@ public class ClubTest {
             extract().
             path("token");
 
-        Response response = 
+        Response response =
             given().
             contentType("application/json").
             header("Authorization", "Bearer " + token).
@@ -174,7 +175,7 @@ public class ClubTest {
             post("http://localhost:8080/api/club/").
             then().
             log().body().
-            statusCode(200).
+            statusCode(anyOf(is(200), is(409))).
             extract().
             response();
     }

@@ -144,7 +144,7 @@ public class ClubController {
         User sessionUser = userService.getLoggedInUser();
         if (!sessionUser.getRoles().contains(new Role(Role.SCHOOL_ADMIN))) {
             throw new InsufficentAccessException(
-                    "Insufficent access - need to have teacher access");
+                    "Insufficent access - need to have school admin access");
         }
         String schoolId = sessionUser.getSchoolId();
 
